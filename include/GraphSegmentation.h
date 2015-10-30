@@ -26,8 +26,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 #include "Segments.h"
 #include "BuildGraph.h"
 #include "RegionTree.h"
-#include <amp.h>
-#include <amp_math.h>
 
 typedef struct
 {
@@ -62,14 +60,14 @@ public:
 			y = elts[y].p;
 		elts[x].p = y;
 		return y;
-	};  
+	};
 	void join(int x, int y)
 	{
 		if (elts[x].rank > elts[y].rank)
 		{
 			elts[y].p = x;
 			elts[x].size += elts[y].size;
-		} 
+		}
 		else
 		{
 			elts[x].p = y;
@@ -89,30 +87,30 @@ public:
 	int num;
 };
 
-int SegmentNormals(const pcl::PointCloud<pcl::PointXYZRGBA> &cloud, 
-	const pcl::PointCloud<pcl::PointNormal>::ConstPtr &in, 
-	float sigma, 
-	float c, 
+int SegmentNormals(const pcl::PointCloud<pcl::PointXYZRGBA> &cloud,
+	const pcl::PointCloud<pcl::PointNormal>::ConstPtr &in,
+	float sigma,
+	float c,
 	int min_size,
 	pcl::PointCloud<pcl::PointXYZI>::Ptr &out,
 	pcl::PointCloud<pcl::PointXYZRGBA>::Ptr &out_color);
 
-int SegmentColorAndNormals(const pcl::PointCloud<pcl::PointXYZRGBA> &cloud, 
-	const pcl::PointCloud<pcl::PointNormal>::ConstPtr &in, 
-	float sigma_normal, 
+int SegmentColorAndNormals(const pcl::PointCloud<pcl::PointXYZRGBA> &cloud,
+	const pcl::PointCloud<pcl::PointNormal>::ConstPtr &in,
+	float sigma_normal,
 	float sigma_color,
-	float c, 
+	float c,
 	int min_size,
 	pcl::PointCloud<pcl::PointXYZI>::Ptr &out,
 	pcl::PointCloud<pcl::PointXYZRGBA>::Ptr &out_color);
 
 int SHGraphSegment(
-	pcl::PointCloud<pcl::PointXYZRGBA> &in, 
-	float sigma_depth, 
-	float c_depth, 
+	pcl::PointCloud<pcl::PointXYZRGBA> &in,
+	float sigma_depth,
+	float c_depth,
 	int depth_min_size,
 	float sigma_color,
-	float c_color, 
+	float c_color,
 	int color_min_size,
 	pcl::PointCloud<pcl::PointXYZI> *out,
 	pcl::PointCloud<pcl::PointXYZRGBA> *out_color);

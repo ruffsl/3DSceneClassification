@@ -13,7 +13,7 @@
 #define THRESHOLD(size, c) (c/size)
 
 template <class T>
-inline T square(const T &x) { return x*x; }; 
+inline T square(const T &x) { return x*x; };
 
 /* make filters */
 #define MAKE_FILTER(name, fun)                                \
@@ -32,7 +32,6 @@ inline T square(const T &x) { return x*x; };
 MAKE_FILTER(fgauss, (float) expf(-0.5*square(i/sigma)));
 
 using namespace std;
-using namespace concurrency;
 using namespace pcl;
 using namespace cv;
 
@@ -41,7 +40,7 @@ void normalize(std::vector<float> &mask)
 	int len = mask.size();
 	float sum = 0;
 	int i;
-	for (i = 1; i < len; i++) 
+	for (i = 1; i < len; i++)
 	{
 		sum += fabsf(mask[i]);
 	}
@@ -169,7 +168,7 @@ void iBuildGraph(const PointCloud<PointXYZRGBA> &in,
 				*p++ = edge;
 				num++;
 			}
-			if ((x < safeWidth) && (y < safeHeight)) 
+			if ((x < safeWidth) && (y < safeHeight))
 			{
 				Edge3D edge;
 				edge.a = y * width + x;
@@ -259,7 +258,7 @@ void iBuildGraphNormals(const PointCloud<PointNormal> &in,
 				*p++ = edge;
 				num++;
 			}
-			if ((x < safeWidth) && (y < safeHeight)) 
+			if ((x < safeWidth) && (y < safeHeight))
 			{
 				Edge edge;
 				edge.a = y * width + x;
@@ -296,7 +295,7 @@ void iBuildGraphNormals(const PointCloud<PointNormal> &in,
 void iBuildGraphColorAndNormals(const PointCloud<PointXYZRGBA> &color,
 								const PointCloud<PointNormal> &normal,
 								float sigma_normal,
-								float sigma_color, 
+								float sigma_color,
 								Edge *&edges,
 								int *num_edges)
 {
@@ -354,7 +353,7 @@ void iBuildGraphColorAndNormals(const PointCloud<PointXYZRGBA> &color,
 				*p++ = edge;
 				num++;
 			}
-			if ((x < safeWidth) && (y < safeHeight)) 
+			if ((x < safeWidth) && (y < safeHeight))
 			{
 				Edge edge;
 				edge.a = y * width + x;
@@ -440,10 +439,10 @@ bool lessThan3D (const Edge3D& a, const Edge3D& b) {
 }
 
 void iSegment_graph(int num_vertices, int num_edges, Edge*& edges, float c, Universe *u)
-{ 
+{
 	Edge* pEdge = edges, *edgesEnd = pEdge + num_edges;
 	// sort edges by weight
-	concurrency::parallel_sort(pEdge, edgesEnd);
+	sort(pEdge, edgesEnd);
 	//thrustsort(pEdge,edgesEnd);
 
 	// init thresholds
@@ -481,10 +480,10 @@ void iSegment_graph(int num_vertices, int num_edges, Edge*& edges, float c, Univ
 
 
 void iSegment_graph(int num_vertices, int num_edges, Edge3D*& edges, float c, Universe *u)
-{ 
+{
 	Edge3D* pEdge = edges, *edgesEnd = pEdge + num_edges;
 	// sort edges by weight
-	concurrency::parallel_sort(pEdge, edgesEnd);
+	sort(pEdge, edgesEnd);
 	//thrustsort(pEdge,edgesEnd);
 
 	// init thresholds
@@ -521,10 +520,10 @@ void iSegment_graph(int num_vertices, int num_edges, Edge3D*& edges, float c, Un
 }
 
 void iSegmentStep2_graph(int num_vertices, int num_edges, Edge3D*& edges, float c, Universe &u1, Universe *u2)
-{ 
+{
 	Edge3D* pEdge = edges, *edgesEnd = pEdge + num_edges;
 	// sort edges by weight
-	concurrency::parallel_sort(pEdge, edgesEnd,lessThan3D);
+	sort(pEdge, edgesEnd,lessThan3D);
 	//thrustsort2(pEdge,edgesEnd);
 
 	// init thresholds
@@ -568,7 +567,7 @@ inline void iJoin_graph(Edge *&edges, int num_edges, int min_size, Universe *u) 
 	Edge *pEdge = edges, *edgesEnd = edges + num_edges;
 	while(pEdge != edgesEnd)
 	{
-		int a = u->find(pEdge->a); 
+		int a = u->find(pEdge->a);
 		int b = u->find(pEdge->b);
 		if ((a != b) && ((u->size(a) < min_size) || (u->size(b) < min_size)))
 		{
@@ -583,7 +582,7 @@ inline void iJoin_graph(Edge3D *&edges, int num_edges, int min_size, Universe *u
 	while(pEdge != edgesEnd)
 	{
 		//if(pEdge->valid) {
-		int a = u->find(pEdge->a); 
+		int a = u->find(pEdge->a);
 		int b = u->find(pEdge->b);
 		if ((a != b) && ((u->size(a) < min_size) || (u->size(b) < min_size)))
 		{
@@ -595,22 +594,22 @@ inline void iJoin_graph(Edge3D *&edges, int num_edges, int min_size, Universe *u
 }
 
 void random_rgb(Vec3b &c)
-{ 
+{
 	c[0] = rand() % 255 + 1;
 	c[1] = rand() % 255 + 1;
 	c[2] = rand() % 255 + 1;
 }
 
 int SHGraphSegment(
-	PointCloudBgr &in, 
-	float sigma_depth, 
-	float c_depth, 
+	PointCloudBgr &in,
+	float sigma_depth,
+	float c_depth,
 	int depth_min_size,
 	float sigma_color,
-	float c_color, 
+	float c_color,
 	int color_min_size,
 	PointCloudInt *out,
-	PointCloudBgr *out_color) 
+	PointCloudBgr *out_color)
 {
 
 	int i, size = in.size();
@@ -679,12 +678,12 @@ int SHGraphSegment(
 }
 
 int Segment3D::Initialize(
-	const PointCloudBgr &in, 
-	float sigma_depth, 
-	float c_depth, 
+	const PointCloudBgr &in,
+	float sigma_depth,
+	float c_depth,
 	int depth_min_size,
 	float sigma_color,
-	float c_color, 
+	float c_color,
 	int color_min_size,
 	PointCloud<PointXYZI>::Ptr &out,
 	PointCloudBgr::Ptr &out_color) {
@@ -755,16 +754,16 @@ int Segment3D::Initialize(
 
 
 int Segment3D::AddSlice(
-	const PointCloudBgr &in, 
-	float sigma_depth, 
-	float c_depth, 
+	const PointCloudBgr &in,
+	float sigma_depth,
+	float c_depth,
 	int depth_min_size,
 	float sigma_color,
-	float c_color, 
+	float c_color,
 	int color_min_size,
 	PointCloud<PointXYZI>::Ptr &out,
 	PointCloudBgr::Ptr &out_color) {
-		if(!m_init) 
+		if(!m_init)
 			return Initialize(in,sigma_depth,c_depth,depth_min_size,sigma_color,c_color,color_min_size, out, out_color);
 		int i, size = in.size();
 		Universe currU_C = Universe(size);
@@ -831,10 +830,10 @@ void Segment3D::Merge() {
 	//currTree.TemporalCorrection(prevList,currList,1);
 }
 
-int SegmentNormals(const PointCloudBgr &cloud, 
-				   const PointCloud<PointNormal>::ConstPtr &in, 
-				   float sigma, 
-				   float c, 
+int SegmentNormals(const PointCloudBgr &cloud,
+				   const PointCloud<PointNormal>::ConstPtr &in,
+				   float sigma,
+				   float c,
 				   int min_size,
 				   PointCloud<PointXYZI>::Ptr &out,
 				   PointCloudBgr::Ptr &out_color) {
@@ -898,11 +897,11 @@ int SegmentNormals(const PointCloudBgr &cloud,
 					   return currU.num_sets();
 }
 
-int SegmentColorAndNormals(const pcl::PointCloud<pcl::PointXYZRGBA> &cloud, 
-						   const pcl::PointCloud<pcl::PointNormal>::ConstPtr &in, 
-						   float sigma_normal, 
+int SegmentColorAndNormals(const pcl::PointCloud<pcl::PointXYZRGBA> &cloud,
+						   const pcl::PointCloud<pcl::PointNormal>::ConstPtr &in,
+						   float sigma_normal,
 						   float sigma_color,
-						   float c, 
+						   float c,
 						   int min_size,
 						   pcl::PointCloud<pcl::PointXYZI>::Ptr &out,
 						   pcl::PointCloud<pcl::PointXYZRGBA>::Ptr &out_color) {

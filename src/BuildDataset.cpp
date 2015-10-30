@@ -79,11 +79,11 @@ inline void EstimateNormals(const PointCloud<PointXYZRGBA>::ConstPtr &cloud, Poi
 	if(fill) {
 		PointCloudNormal::iterator p = normals->begin();
 		while(p != normals->end()) {
-			if(_isnan(p->normal_x))
+			if(isnan(p->normal_x))
 				p->normal_x = 0;
-			if(_isnan(p->normal_y))
+			if(isnan(p->normal_y))
 				p->normal_y = 0;
-			if(_isnan(p->normal_z))
+			if(isnan(p->normal_z))
 				p->normal_z = 0;
 			++p;
 		}
@@ -449,7 +449,7 @@ void BuildRFClassifier(string direc) {
 		0, // regression accuracy: N/A here
 		false, // compute surrogate split, no missing data
 		15, // max number of categories (use sub-optimal algorithm for larger numbers)
-		nullptr, // the array of priors
+		NULL, // the array of priors
 		false,  // calculate variable importance
 		50,       // number of variables randomly selected at node and used to find the best split(s).
 		500,	 // max number of trees in the forest
@@ -650,8 +650,8 @@ template<typename T>
 void GenerateImageFromMask(const Mat &in, const Mat &mask, Mat &segment) {
 	segment = Mat::zeros(in.size(), in.type());
 	Mat_<uchar>::const_iterator p = mask.begin<uchar>();
-	Mat_<T>::const_iterator pC = in.begin<T>();
-	Mat_<T>::iterator pO = segment.begin<T>();
+	typename Mat_<T>::const_iterator pC = in.begin<T>();
+	typename Mat_<T>::iterator pO = segment.begin<T>();
 	while(p != mask.end<uchar>()) {
 		if(*p == 255)
 			*pO = *pC;
@@ -690,10 +690,10 @@ void BuildNYUDatasetForCaffe(string direc, bool window) {
 	//Open the training and testing files
 	FILE *fpTraining = fopen("training.txt","w");
 	if(fpTraining == NULL)
-		throw exception("Couldn't open training file");
+        throw std::runtime_error("Couldn't open training file");
 	FILE *fpTesting = fopen("testing.txt","w");
 	if(fpTesting == NULL)
-		throw exception("Couldn't open Testing file");
+        throw std::runtime_error("Couldn't open Testing file");
 
 	int count = 0, training_count = 0;
 	string folder;

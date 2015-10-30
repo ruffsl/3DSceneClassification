@@ -4,12 +4,21 @@ using namespace std;
 using namespace pcl;
 using namespace cv;
 
+const char* PathFindExtension(const char* fname) {
+    std::string::size_type idx;
+    std::string filename = string(fname);
+    idx = filename.rfind('.');
+    if(idx != std::string::npos)
+        return filename.substr(idx).c_str();
+    return NULL;
+}
+
 Mat imread_depth(const char* fname, bool binary) {
-	char* ext = PathFindExtension(fname);
+    const char* ext = PathFindExtension(fname);
 	const char char_dep[] = ".dep";
 	const char char_png[] = ".png";
 	Mat out;
-	if(_strnicmp(ext,char_dep,strlen(char_dep))==0) {
+    if(strncasecmp(ext,char_dep,strlen(char_dep))==0) {
 		FILE *fp;
 		if(binary)
 			fp = fopen(fname,"rb");
@@ -32,7 +41,7 @@ Mat imread_depth(const char* fname, bool binary) {
 			}
 		}
 		fclose(fp);
-	} else if(_strnicmp(ext,char_png,strlen(char_png))==0) {
+    } else if(strncasecmp(ext,char_png,strlen(char_png))==0) {
 		out = cvLoadImage(fname,CV_LOAD_IMAGE_ANYDEPTH | CV_LOAD_IMAGE_ANYCOLOR);
 		out.convertTo(out, CV_32S);
 		int* pi = (int*)out.data;
@@ -43,16 +52,16 @@ Mat imread_depth(const char* fname, bool binary) {
 			}
 		}
 	} else {
-		throw exception("Filetype not supported");
+        throw std::runtime_error("Filetype not supported");
 	}
 	return out;
 }
 
 Mat imread_float(const char* fname, bool binary) {
-	char* ext = PathFindExtension(fname);
+    const char* ext = PathFindExtension(fname);
 	const char char_dep[] = ".flt";
 	Mat out;
-	if(_strnicmp(ext,char_dep,strlen(char_dep))==0) {
+    if(strncasecmp(ext,char_dep,strlen(char_dep))==0) {
 		FILE *fp;
 		if(binary)
 			fp = fopen(fname,"rb");
@@ -76,16 +85,16 @@ Mat imread_float(const char* fname, bool binary) {
 		}
 		fclose(fp);
 	} else {
-		throw exception("Filetype not supported");
+        throw std::runtime_error("Filetype not supported");
 	}
 	return out;
 }
 
 void imwrite_depth(const char* fname, Mat &img, bool binary) {
-	char* ext = PathFindExtension(fname);
+    const char* ext = PathFindExtension(fname);
 	const char char_dep[] = ".dep";
 	Mat out;
-	if(_strnicmp(ext,char_dep,strlen(char_dep))==0) {
+    if(strncasecmp(ext,char_dep,strlen(char_dep))==0) {
 		FILE *fp;
 		if(binary)
 			fp = fopen(fname,"wb");
@@ -107,15 +116,15 @@ void imwrite_depth(const char* fname, Mat &img, bool binary) {
 		}
 		fclose(fp);
 	} else {
-		throw exception("Filetype not supported");
+        throw std::runtime_error("Filetype not supported");
 	}
 }
 
 void imwrite_float(const char* fname, Mat &img, bool binary) {
-	char* ext = PathFindExtension(fname);
+    const char* ext = PathFindExtension(fname);
 	const char char_dep[] = ".flt";
 	Mat out;
-	if(_strnicmp(ext,char_dep,strlen(char_dep))==0) {
+    if(strncasecmp(ext,char_dep,strlen(char_dep))==0) {
 		FILE *fp;
 		if(binary)
 			fp = fopen(fname,"wb");
@@ -137,7 +146,7 @@ void imwrite_float(const char* fname, Mat &img, bool binary) {
 		}
 		fclose(fp);
 	} else {
-		throw exception("Filetype not supported");
+        throw std::runtime_error("Filetype not supported");
 	}
 }
 
@@ -175,7 +184,8 @@ void Classifier::build_vocab() {
 			stringstream num;
 			num << i;
 			img = imread(string(direc + "rgb\\" + num.str() + ".bmp"));
-			CalculateSIFTFeatures(img,Mat(),descriptors);
+            Mat tmp;
+            CalculateSIFTFeatures(img,tmp,descriptors);
 		}
 	}
 
@@ -209,7 +219,7 @@ void Classifier::load_vocab() {
 void Classifier::LoadTestingInd() {
 	FILE *fp = fopen("testing_ind.txt","rb");
 	if(fp == NULL)
-		throw exception("Couldn't open testing file");
+        throw std::runtime_error("Couldn't open testing file");
 	int length, i;
 	fread(&length,sizeof(int),1,fp);
 	testingInds.resize(length);
@@ -224,7 +234,7 @@ void Classifier::LoadTestingInd() {
 void Classifier::LoadTrainingInd() {
 	FILE *fp = fopen("training_ind.txt","rb");
 	if(fp == NULL)
-		throw exception("Couldn't open training file");
+        throw std::runtime_error("Couldn't open training file");
 	int length, i;
 	fread(&length,sizeof(int),1,fp);
 	trainingInds.resize(length);
@@ -240,7 +250,7 @@ void Classifier::LoadClassMap(string classfile) {
 	int length, i;
 	FILE *fp = fopen(classfile.c_str(),"rb");
 	if(fp == NULL)
-		throw exception("Couldn't open class mapping file");
+        throw std::runtime_error("Couldn't open class mapping file");
 	fread(&length,sizeof(int),1,fp);
 	length++;
 	classMap.resize(length);

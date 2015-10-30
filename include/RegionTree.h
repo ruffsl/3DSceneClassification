@@ -22,8 +22,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 #include "OpticalFlow.h"
 #include "Edges.h"
 #include <vector>
-#include <amp.h>
-#include <amp_math.h>
+// #include <amp.h>
+// #include <amp_math.h>
 
 #define NUM_BINS 20
 #define NUM_BINS_XYZ 30

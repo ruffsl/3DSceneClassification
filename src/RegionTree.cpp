@@ -22,7 +22,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 using namespace std;
 using namespace pcl;
 using namespace cv;
-using namespace concurrency;
 
 inline void LAB::RGB2XYZ(int r, int g, int b, float *x, float *y, float *z) {
 	//convert RGB to xyz
@@ -40,7 +39,7 @@ inline void LAB::RGB2XYZ(int r, int g, int b, float *x, float *y, float *z) {
 	gg *= 100.0f;
 	bb *= 100.0f;
 
-	//Observer. = 2°, Illuminant = D65
+	//Observer. = 2ï¿½, Illuminant = D65
 	*x = rr * 0.4124f + gg * 0.3576f + bb * 0.1805f;
 	*y = rr * 0.2126f + gg * 0.7152f + bb * 0.0722f;
 	*z = rr * 0.0193f + gg * 0.1192f + bb * 0.9505f;
@@ -109,7 +108,7 @@ LABXYZ::LABXYZ(int r_val, int g_val, int b_val, float x_val, float y_val, float 
 
 
 inline void Region3D::InitializeRegion(PointXYZI *in, Vec3b &color, const pcl::PointNormal &normal, const int label, const int i, const int j, const int level) {
-	//if(!_isnan(in->z)) {
+	//if(!isnan(in->z)) {
 	m_level  = level;
 	m_size = 1;
 	m_hist = new LABXYZUVW[NUM_BINS_XYZ]();
@@ -120,11 +119,11 @@ inline void Region3D::InitializeRegion(PointXYZI *in, Vec3b &color, const pcl::P
 	m_hist[Clamp(Round(labxyz.x * HIST_MUL_X),0,NUM_BINS_XYZ)].x++;
 	m_hist[Clamp(Round(labxyz.y * HIST_MUL_Y),0,NUM_BINS_XYZ)].y++;
 	m_hist[Clamp(Round(labxyz.z * HIST_MUL_Z),0,NUM_BINS_XYZ)].z++;
-	if(!_isnan(labxyz.u))
+	if(!isnan(labxyz.u))
 		m_hist[Clamp(Round(labxyz.u * HIST_MUL_N),0,NUM_BINS)].u++;
-	if(!_isnan(labxyz.v))
+	if(!isnan(labxyz.v))
 		m_hist[Clamp(Round(labxyz.v * HIST_MUL_N),0,NUM_BINS)].v++;
-	if(!_isnan(labxyz.w))
+	if(!isnan(labxyz.w))
 		m_hist[Clamp(Round(labxyz.w * HIST_MUL_N),0,NUM_BINS)].w++;
 	m_centroid = Point(i,j);
 	m_centroid3D.x = m_min3D.x = m_max3D.x = in->x;
@@ -208,7 +207,7 @@ inline void Region3D::InitializeRegion(Region3D *node1, Region3D *node2, int lev
 }
 
 inline void Region3D::AddNode(PointXYZI *in, Vec3b &color, const pcl::PointNormal &normal, const int i, const int j) {
-	//if(!_isnan(in->z)) {
+	//if(!isnan(in->z)) {
 	LABXYZUVW labxyz = LABXYZUVW(color[2],color[1],color[0],in->x,in->y,in->z,normal.normal_x,normal.normal_y,normal.normal_z);
 	m_hist[Clamp(Round(labxyz.l * HIST_MUL_L), 0, NUM_BINS)].l++;
 	m_hist[Clamp(Round(labxyz.a * HIST_MUL_A), 0, NUM_BINS)].a++;
@@ -216,11 +215,11 @@ inline void Region3D::AddNode(PointXYZI *in, Vec3b &color, const pcl::PointNorma
 	m_hist[Clamp(Round(labxyz.x * HIST_MUL_X), 0, NUM_BINS_XYZ)].x++;
 	m_hist[Clamp(Round(labxyz.y * HIST_MUL_Y), 0, NUM_BINS_XYZ)].y++;
 	m_hist[Clamp(Round(labxyz.z * HIST_MUL_Z), 0, NUM_BINS_XYZ)].z++;
-	if(!_isnan(labxyz.u))
+	if(!isnan(labxyz.u))
 		m_hist[Clamp(Round(labxyz.u * HIST_MUL_N),0,NUM_BINS)].u++;
-	if(!_isnan(labxyz.v))
+	if(!isnan(labxyz.v))
 		m_hist[Clamp(Round(labxyz.v * HIST_MUL_N),0,NUM_BINS)].v++;
-	if(!_isnan(labxyz.w))
+	if(!isnan(labxyz.w))
 		m_hist[Clamp(Round(labxyz.w * HIST_MUL_N),0,NUM_BINS)].w++;
 	m_size++;
 	m_centroid.x += i;
@@ -244,6 +243,7 @@ inline void Region3D::AddNode(PointXYZI *in, Vec3b &color, const pcl::PointNorma
 	//}
 }
 
+template<>
 void RegionTree3D::Create(const PointCloudBgr &in, PointCloudInt &labels, const pcl::PointCloud<pcl::PointNormal> &normals, int num_segments, int start_label) {
 	this->Release();
 	*this = RegionTree3D(num_segments,in.width,in.height);
@@ -270,7 +270,7 @@ void RegionTree3D::Create(const PointCloudBgr &in, PointCloudInt &labels, const 
 	//float bad_point = std::numeric_limits<float>::quiet_NaN ();
 	for(j = 0; j < in.height; j++) {
 		for(i = 0; i < in.width; i++) {
-			//if(!_isnan(pIn->z)) {
+			//if(!isnan(pIn->z)) {
 			//for each voxel, add to the appropriate region and compute important values
 			loc = lookup[int(pLabel->intensity)];
 			//Am I a new region?
@@ -284,7 +284,8 @@ void RegionTree3D::Create(const PointCloudBgr &in, PointCloudInt &labels, const 
 					printf("Vector out of range\n");
 				}
 				region_list[numRegions] = new Region3D();
-				region_list[numRegions]->InitializeRegion(pLabel._Ptr, Vec3b(pIn->b,pIn->g,pIn->r), *pNormal, current + start_label, i, j, 1);
+                Vec3b tmpColor = Vec3b(pIn->b,pIn->g,pIn->r);
+                region_list[numRegions]->InitializeRegion(&(*pLabel), tmpColor, *pNormal, current + start_label, i, j, 1);
 				pRegion = region_list[numRegions];
 				if(current >= totRegions) {
 					printf("Vector out of range\n");
@@ -305,13 +306,14 @@ void RegionTree3D::Create(const PointCloudBgr &in, PointCloudInt &labels, const 
 	Region3D *tmp = NULL;
 	for(j = 0; j < in.height; j++) {
 		for(i = 0; i < in.width; i++) {
-			//if(!_isnan(pIn->z)) {
+			//if(!isnan(pIn->z)) {
 			//I'm not new, add me appropriately
 			//Add node to appropriately region list
 			loc = lookup[int(pLabel->intensity)];
 			pRegion = region_list[loc];
 			assert(pRegion != NULL);
-			region_list[loc]->AddNode(pLabel._Ptr, Vec3b(pIn->b,pIn->g,pIn->r),*pNormal,i,j);
+            Vec3b tmpColor = Vec3b(pIn->b,pIn->g,pIn->r);
+            region_list[loc]->AddNode(&(*pLabel), tmpColor,*pNormal,i,j);
 			//Check for neighbors
 			if(i < safeWidth) {
 				label = lookup[int((pLabel + 1)->intensity)];
@@ -359,6 +361,7 @@ void RegionTree3D::Create(const PointCloudBgr &in, PointCloudInt &labels, const 
 	delete[] lookup;
 }
 
+template<>
 void RegionTree3D::SetBranch(Region3D* region, int level, int label) {
 	assert(region != NULL);
 	if(label == -1 && region->m_level <= level) {
@@ -386,6 +389,7 @@ void RegionTree3D::SetBranch(Region3D* region, int level, int label) {
 	}
 }
 
+template<>
 void RegionTree3D::UpdateCloud(int level) {
 	//start by finding the right level for each branch
 	int i;
@@ -403,7 +407,7 @@ inline float HistDifference(Region3D &reg1, Region3D &reg2) {
 		LABXYZUVW *p1 = reg1.m_hist, *p2 = reg2.m_hist;
 		int i;
 		for(i = 0; i < NUM_BINS; i++, p1++, p2++) {
-			sad += HIST_COLOR_MOD * (fabsf(float(p1->a) / reg1.m_size - float(p2->a) / reg2.m_size) + fabsf(float(p1->b) / reg1.m_size - float(p2->b) / reg2.m_size) + fabsf(float(p1->l) / reg1.m_size - float(p2->l) / reg2.m_size)) + HIST_DEPTH_MOD * (fabsf(float(p1->x) / reg1.m_size - float(p2->x) / reg2.m_size) + fabsf(float(p1->y) / reg1.m_size - float(p2->y) / reg2.m_size) + fabsf(float(p1->z) / reg1.m_size - float(p2->z) / reg2.m_size)) + HIST_NORMAL_MOD * (fabsf(float(p1->u) / reg1.m_size - float(p2->u) / reg2.m_size) + fabsf(float(p1->v) / reg1.m_size - float(p2->v) / reg2.m_size) + fabsf(float(p1->w) / reg1.m_size - float(p2->w) / reg2.m_size)); 
+			sad += HIST_COLOR_MOD * (fabsf(float(p1->a) / reg1.m_size - float(p2->a) / reg2.m_size) + fabsf(float(p1->b) / reg1.m_size - float(p2->b) / reg2.m_size) + fabsf(float(p1->l) / reg1.m_size - float(p2->l) / reg2.m_size)) + HIST_DEPTH_MOD * (fabsf(float(p1->x) / reg1.m_size - float(p2->x) / reg2.m_size) + fabsf(float(p1->y) / reg1.m_size - float(p2->y) / reg2.m_size) + fabsf(float(p1->z) / reg1.m_size - float(p2->z) / reg2.m_size)) + HIST_NORMAL_MOD * (fabsf(float(p1->u) / reg1.m_size - float(p2->u) / reg2.m_size) + fabsf(float(p1->v) / reg1.m_size - float(p2->v) / reg2.m_size) + fabsf(float(p1->w) / reg1.m_size - float(p2->w) / reg2.m_size));
 		}
 		while(i < NUM_BINS_XYZ) {
 			sad += HIST_DEPTH_MOD * (fabsf(float(p1->x) / reg1.m_size - float(p2->x) / reg2.m_size) + fabsf(float(p1->y) / reg1.m_size - float(p2->y) / reg2.m_size) + fabsf(float(p1->z) / reg1.m_size - float(p2->z) / reg2.m_size));
@@ -416,6 +420,7 @@ inline float HistDifference(Region3D &reg1, Region3D &reg2) {
 	return 1000000;
 }
 
+template<>
 void RegionTree3D::TemporalCorrection(RegionTree3D &past, int level) {
 	if(!m_propagated && !past.m_propagated) {
 		map<Region3D,Region3D> currSeg, pastSeg;
@@ -482,7 +487,7 @@ void RegionTree3D::TemporalCorrection(RegionTree3D &past, int level) {
 			++pCurr;
 		}
 		//fclose(fp);
-	} 
+	}
 }
 
 void UpdateTable(Region3D* child1, Region3D* child2, Region3D* father, vector<Region3D*> &lookup) {
@@ -496,6 +501,7 @@ void UpdateTable(Region3D* child1, Region3D* child2, Region3D* father, vector<Re
 }
 
 
+template<>
 void RegionTree3D::PropagateRegionHierarchy(int min_size) {
 	//lets start by making a handy label lookup table
 	//find max label
@@ -532,14 +538,14 @@ void RegionTree3D::PropagateRegionHierarchy(int min_size) {
 
 	//printf("Graph built, went through %d Edges\n",i);
 	//now that we are done building the graph, join it upwards recursively after sorting it
-	parallel_sort(edges, edgesEnd);
+    sort(edges, edgesEnd);
 
 	//now we should combine neighbors into higher level regions, this is tricky
 	//for each edge, create a new region that points to the regions the edge connects, then recompute the new region statistics and point the lookup table to this new region
 	pEdge = edges;
 	i=0;
 	int current = 0;
-	while(pEdge != edgesEnd) {			
+	while(pEdge != edgesEnd) {
 		Region3D *reg1 = region_list[pEdge->a], *reg2 = region_list[pEdge->b];
 		if(reg1->m_centroid3D.intensity != reg2->m_centroid3D.intensity) {
 			Region3D *father = new Region3D();

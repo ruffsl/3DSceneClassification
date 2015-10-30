@@ -50,7 +50,7 @@ void Display2dOF(Mat flow) {
 	cv::cvtColor(hsv, bgr, cv::COLOR_HSV2BGR);
 	imshow("Optical flow",bgr);
 }
-
+/*
 class SimpleOFViewer
 {
 public:
@@ -113,13 +113,13 @@ public:
 	volatile bool first, update;
 	boost::mutex normalMutex;
 };
-
+*/
 inline void MakeCloudDense(PointCloud<PointXYZRGBA> &cloud) {
 	PointCloud<PointXYZRGBA>::iterator p = cloud.begin();
 	cloud.is_dense = true;
 	for(int j = 0; j < cloud.height; j++) {
 		for(int i = 0; i < cloud.width; i++) {
-			if(_isnan(p->z)) {
+			if(isnan(p->z)) {
 				p->x = float(((float)i - KINECT_CX_D) * KINECT_FX_D);
 				p->y = float(((float)j - KINECT_CY_D) * KINECT_FY_D);
 				p->z = 0;
@@ -135,7 +135,7 @@ inline void MakeCloudDense(PointCloud<PointNormal>::Ptr &cloud) {
 	cloud->is_dense = true;
 	for(int j = 0; j < cloud->height; j++) {
 		for(int i = 0; i < cloud->width; i++) {
-			if(_isnan(p->z)) {
+			if(isnan(p->z)) {
 				p->x = float(((float)i - KINECT_CX_D) * KINECT_FX_D);
 				p->y = float(((float)j - KINECT_CY_D) * KINECT_FY_D);
 				p->z = 0;
@@ -155,30 +155,30 @@ inline void minMax(const PointCloud<PointNormal>::ConstPtr &cloud, PointNormal *
 	min->normal_z = max->normal_z = p->normal_z;
 	for(int j = 0; j < cloud->height; j++) {
 		for(int i = 0; i < cloud->width; i++) {
-			if(!_isnan(p->normal_x)) {
-				if(_isnan(min->normal_x))
+			if(!isnan(p->normal_x)) {
+				if(isnan(min->normal_x))
 					min->normal_x = p->normal_x;
-				if(_isnan(max->normal_x))
+				if(isnan(max->normal_x))
 					max->normal_x = p->normal_x;
 				if(p->normal_x < min->normal_x)
 					min->normal_x = p->normal_x;
 				if(p->normal_x > max->normal_x)
 					max->normal_x = p->normal_x;
 			}
-			if(!_isnan(p->normal_y)) {
-				if(_isnan(min->normal_y))
+			if(!isnan(p->normal_y)) {
+				if(isnan(min->normal_y))
 					min->normal_y = p->normal_y;
-				if(_isnan(max->normal_y))
+				if(isnan(max->normal_y))
 					max->normal_y = p->normal_y;
 				if(p->normal_y < min->normal_y)
 					min->normal_y = p->normal_y;
 				if(p->normal_y > max->normal_y)
 					max->normal_y = p->normal_y;
 			}
-			if(!_isnan(p->normal_z)) {
-				if(_isnan(min->normal_z))
+			if(!isnan(p->normal_z)) {
+				if(isnan(min->normal_z))
 					min->normal_z = p->normal_z;
-				if(_isnan(max->normal_z))
+				if(isnan(max->normal_z))
 					max->normal_z = p->normal_z;
 				if(p->normal_z < min->normal_z)
 					min->normal_z = p->normal_z;
@@ -189,7 +189,7 @@ inline void minMax(const PointCloud<PointNormal>::ConstPtr &cloud, PointNormal *
 		}
 	}
 }
-
+/*
 class SimpleSegmentViewer
 {
 public:
@@ -260,7 +260,7 @@ public:
 	boost::mutex normalMutex;
 	Segment3D stseg;
 };
-
+*/
 int main (int argc, char** argv) {
 	try {
 		//SimpleSegmentViewer v;

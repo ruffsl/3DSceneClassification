@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "Microsoft_grabber.h"
+// #include "Microsoft_grabber.h"
 #include <pcl/visualization/cloud_viewer.h>
 
 #include <opencv2/opencv.hpp>
@@ -9,7 +9,6 @@
 #include "OpticalFlow.h"
 #include "GraphSegmentation.h"
 
-#include <Shlwapi.h>
 #include <string.h>
 
 #define NUM_LABELS 894
