@@ -183,7 +183,7 @@ void Classifier::build_vocab() {
 			trainingInds.pop_front();
 			stringstream num;
 			num << i;
-			img = imread(string(direc + "rgb\\" + num.str() + ".bmp"));
+            img = imread(string(direc + "rgb/" + num.str() + ".bmp"));
             Mat tmp;
             CalculateSIFTFeatures(img,tmp,descriptors);
 		}
@@ -267,11 +267,11 @@ void LoadData(string direc, int i, Mat &img, Mat &depth, Mat &label) {
 	num << i;
 	//I should crop everything some number of pixels
 	int crop = 7;
-	img = imread(string(direc + "rgb\\" + num.str() + ".bmp"));
+    img = imread(string(direc + "rgb/" + num.str() + ".bmp"));
 	Rect roi = Rect(crop,crop,img.cols - 2*crop, img.rows - 2*crop);
 	img = img(roi);
-	depth = imread_depth(string(direc + "depth\\" + num.str() + ".dep").c_str(),true);
+    depth = imread_depth(string(direc + "depth/" + num.str() + ".dep").c_str(),true);
 	depth = depth(roi);
-	label = imread_depth(string(direc + "labels\\" + num.str() + ".dep").c_str(),true);
+    label = imread_depth(string(direc + "labels/" + num.str() + ".dep").c_str(),true);
 	label = label(roi);
 }
