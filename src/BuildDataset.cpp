@@ -386,9 +386,9 @@ void BuildNYUDataset(string direc, bool matlab) {
 			num3 << "segments/" << i << ".dep";
 			Mat segmentMat, segmentMatColor;
 			GetMatFromCloud(labelCloud,segmentMat);
-			//PseudoColor(labelCloud,segmentMatColor);
-			//imshow("window",segmentMatColor);
-			//waitKey();
+            PseudoColor(labelCloud,segmentMatColor);
+            imshow("window",segmentMatColor);
+            waitKey();
 			imwrite_depth(num3.str().c_str(),segmentMat);
 
 			//release stuff

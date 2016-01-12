@@ -130,8 +130,8 @@ inline void Region3D::InitializeRegion(PointXYZI *in, Vec3b &color, const pcl::P
 	m_centroid3D.y = m_min3D.y = m_max3D.y = in->y;
 	m_centroid3D.z = m_min3D.z = m_max3D.z = in->z;
 	m_centroid3D.intensity = label;
-	m_nodes.reserve(76800);
-	m_neighbors.reserve(8);
+    //m_nodes.reserve(76800);
+    //m_neighbors.reserve(8);
 	m_nodes.push_back(in);
 	m_regions[0] = m_regions[1] = NULL;
 	m_numRegions = 0;
@@ -283,6 +283,9 @@ void RegionTree3D::Create(const PointCloudBgr &in, PointCloudInt &labels, const 
 				if(numRegions >= totRegions) {
 					printf("Vector out of range\n");
 				}
+                if(numRegions == 42){
+                    int lol = 1;
+                }
 				region_list[numRegions] = new Region3D();
                 Vec3b tmpColor = Vec3b(pIn->b,pIn->g,pIn->r);
                 region_list[numRegions]->InitializeRegion(&(*pLabel), tmpColor, *pNormal, current + start_label, i, j, 1);

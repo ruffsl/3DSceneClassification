@@ -417,7 +417,7 @@ void iBuildGraphCUDA(const PointCloud<PointXYZRGBA>::ConstPtr &in,
 	//PointCloud<Bgr> norm;
 	//Normalize(in,&norm);
 
-	igpuBuildGraph(smooth_r, smooth_g, smooth_b, smooth_d, edges, reserve_size);
+//	igpuBuildGraph(smooth_r, smooth_g, smooth_b, smooth_d, edges, reserve_size);
 	R.release();
 	G.release();
 	B.release();

@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 project(3DSceneClassification)
 
+#list( APPEND CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}")
+
 SET_PROPERTY(GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS TRUE)
 
 find_package( PCL 1.7 REQUIRED)
